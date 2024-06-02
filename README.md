@@ -50,6 +50,11 @@ Download and untar [ldr_final_prl_model.pth](https://drive.google.com/file/d/1td
 
 Download and untar [hdr_final_prl_model.pth](https://drive.google.com/file/d/1RE-qpABPiLN0RTxKjR02hGAXRR1VKMUl/view?usp=sharing) into `data/hdr_final_prl_model.pth` folder.
 
+## Demo
+
+See the prl_master_demo.ipynb for a demonstration of our model (after downloading our LDR model).
+
+
 ## Training
 
 See the prl_main_train.py script for a template of how we train our model.
@@ -57,7 +62,3 @@ See the prl_main_train.py script for a template of how we train our model.
 ## Evaluation
 
 See the prl_main_eval.py script for a template of how we evaluate our model.
-
-## Demo
-
-See the prl_master_demo.ipynb for a demonstration of our model (after downloading our LDR model).
