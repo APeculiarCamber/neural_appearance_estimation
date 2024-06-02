@@ -2,7 +2,6 @@
 
 # TODOs:
 ### mention environments (and bare)
-### a little more on master_demo maybe
 
 ## Datasets
 
