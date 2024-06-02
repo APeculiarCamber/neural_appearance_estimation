@@ -4,7 +4,7 @@ from models.prl_net import RelitPixelNet
 import torch
 from torch import Tensor as T
 from torch.utils.data import DataLoader
-from prl_nBRDF_dataset import load_sam_testing_data
+from prl_nBRDF_dataset import load_matfusion_testing_data
 from prl_loss import AlexPerceptualLoss
 
 def eval_net(model : RelitPixelNet, dataloader : DataLoader, m_device):
@@ -26,7 +26,7 @@ def eval_net(model : RelitPixelNet, dataloader : DataLoader, m_device):
 
 if __name__ == "__main__":
     model = torch.load("model_data/final.pth") # TODO
-    eval_dataloader = load_sam_testing_data(batch_size=1, num_samples=50, replacement=False, num_out_samples=256)
+    eval_dataloader = load_matfusion_testing_data(batch_size=1, num_samples=50, replacement=False, num_out_samples=256)
     device = torch.device("cuda")
 
     loss = eval_net(model, eval_dataloader, device)
