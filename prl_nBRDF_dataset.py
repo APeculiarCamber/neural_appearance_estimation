@@ -1,7 +1,7 @@
 import torch
 
 # TAKEN FROM JAMIE'S SINMR FILES FOR RELEASE
-
+ 
 import torch
 from torch.utils.data import Dataset
 import numpy

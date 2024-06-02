@@ -155,7 +155,7 @@ class VGGStyleModel(BaseModel):
             print('VGG GPU')
             self.loss_fns = [loss_fn.to(m_device) for loss_fn in self.loss_fns]
         self.vgg = VGG()
-        # TODO TODO TODO self.vgg.load_state_dict(torch.load('model_data/vgg_conv.pth'))
+        self.vgg.load_state_dict(torch.load('model_data/vgg_conv.pth'))
         for param in self.vgg.parameters():
             param.requires_grad = False
         if torch.cuda.is_available():

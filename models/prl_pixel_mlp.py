@@ -8,18 +8,13 @@ class NaiveMLPRenderer(nn.Module):
         b = False
         self.net = nn.Sequential(
             nn.Conv2d(in_c, 128, 1, bias=b),
-            # nn.BatchNorm2d(128),
             nn.Conv2d(128, 128, 1, bias=b),
-            # nn.BatchNorm2d(128),
             nn.LeakyReLU(),
             nn.Conv2d(128, 128, 1, bias=b),
-            # nn.BatchNorm2d(128),
             nn.LeakyReLU(),
             nn.Conv2d(128, 128, 1, bias=b),
             nn.LeakyReLU(),
             nn.Conv2d(128, 128, 1, bias=b),
-            #nn.LeakyReLU(),
-            #nn.Conv2d(128, 128, 1, bias=b),
             nn.LeakyReLU(),
             nn.Conv2d(128, 64, 1, bias=b),
             nn.LeakyReLU(),

@@ -11,7 +11,7 @@ else:
 
 def convert_from_enum(e : Enum):
     if isinstance(e, Enum):
-        return e.name
+        return e.name 
     else: return e
 def convert_to_enum(s : str, dtype : Enum.__class__):
    return dtype[s]

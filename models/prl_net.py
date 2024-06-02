@@ -162,7 +162,6 @@ class RelitPixelNet(nn.Module):
         - lt: N x 3 x H x W tensor of light directions for each pixel in x
         - vt: N x 3 x H x W tensor of view directions for each pixel in x
 
-
         NOTE: Expects images to be linear color space HDR
         '''
         assert assert_normalized(lt, d=-3) and assert_normalized(vt, d=-3)

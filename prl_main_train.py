@@ -152,7 +152,7 @@ if __name__ == "__main__":
     conf.lr_render_gamma = 0.985
     conf.pr_frequencies = 2#16
 
-    conf.crop_size = 32#256
+    conf.crop_size = 32#256 
     conf.compressed_freq_encoding_count = 32
 
     num_epochs = 4

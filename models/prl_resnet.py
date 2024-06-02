@@ -425,7 +425,6 @@ class GenResNetReplicateHA(nn.Module):
             x = reverse(x)
 
         x = self.deconv1(x)
-        # x = self.deconv1_acitvation(x)
         # TODO
         # x = torch.tanh(x)
         return x

@@ -4,7 +4,7 @@ import imageio.v2 as imageio
 from PIL import Image
 
 def normalize(t : torch.Tensor,d=-1) -> torch.Tensor:
-    '''
+    ''' 
     Normalize (with p=2 norm) a single dimension of the tensor
     '''
     length = torch.norm(t,p=2,dim=d)

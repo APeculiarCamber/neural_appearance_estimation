@@ -17,7 +17,7 @@ def eval_net(model : RelitPixelNet, dataloader : DataLoader, m_device):
             batch : tuple[T, T, T, T, T, T, T, T] = batch
             x, l, v, in_n, tx, tl, tv, _ = [b.to(m_device) for b in batch]
             
-            x_render, x_neural_rep = model.render_multi(x, l, v, tl, tv) # ASSUMES DIM = 5
+            x_render, x_neural_rep = model.render_multi(x, l, v, tl, tv) # ASSUMES DIM = 5 
             x_render = model.space_manager.decompress_target_call(x_render)
 
             total_loss =+ loss_func(x_render, tx, tl, tv, x_neural_rep, x, l, v, in_n).item()

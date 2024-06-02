@@ -1,7 +1,6 @@
 import torch
 import torch.nn as nn
 
-
 class HalfZedEncoder(nn.Module):
     def __init__(self):
         super().__init__()
@@ -9,7 +8,6 @@ class HalfZedEncoder(nn.Module):
         return nn.functional.normalize(lt + vt, dim=1)[:,2:3,:,:]
     def get_feature_count(self):
         return 1
-
 
 class BaseDirectionEncoder(nn.Module):
     def __init__(self):

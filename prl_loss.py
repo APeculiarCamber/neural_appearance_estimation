@@ -9,7 +9,7 @@ from torch.optim.lr_scheduler import ExponentialLR
 import lpips
 
 class BaseLoss:
-    # (out_pred, out_targets, tl, tv) = N, M, 3, H, W;; (x_rep, in_x, in_l, in_v, in_n) = M, 3, H, W;;
+    # (out_pred, out_targets, tl, tv) = N, M, 3, H, W;;  (x_rep, in_x, in_l, in_v, in_n) = M, 3, H, W;;
     def forward(self, out_preds : T, out_targets : T, tl : T, tv : T, x_rep : T, in_x : T, in_l : T, in_v : T, in_n : T):
         pass
     # (out_pred, out_targets, tl, tv) = N, M, 3, H, W;; (x_rep, in_x, in_l, in_v, in_n) = M, 3, H, W;;

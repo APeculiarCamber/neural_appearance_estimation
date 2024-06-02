@@ -1,1 +1,1 @@
-Neural single image estimation model data goes here
+Neural single image estimation model data goes in this directory (model_data)

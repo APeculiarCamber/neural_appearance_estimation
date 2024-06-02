@@ -23,7 +23,7 @@ def generateDirectionMaps(light_pos_world : torch.Tensor, camera_pos_world : tor
         torch.zeros(surface[0, :, :].shape, device=d),
     ], axis=0)
     pos = surface
-    # Shape(3, scale_size, scale_size)
+    # Shape(3, scale_size, scale_size)  
 
     # pos shape: (1, 3, rows, cols)
     # cam shape: (pos_count, 3, 1, 1)
