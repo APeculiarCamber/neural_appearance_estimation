@@ -43,12 +43,12 @@ Download and untar [vgg_conv.pth](https://drive.google.com/file/d/1hW6cGkmxr1XQP
 
 ### LDR MODEL
 
-Download and untar [ldr_final_prl_model.pth]() into `data/ldr_final_prl_model.pth` folder.
+Download and untar [ldr_final_prl_model.pth](https://drive.google.com/file/d/1tdnetJpXWmtPkjB5rNCeIahkdLaFD9pJ/view?usp=sharing) into `data/ldr_final_prl_model.pth` folder.
 
 
 ### HDR MODEL
 
-Download and untar [hdr_final_prl_model.pth]() into `data/hdr_final_prl_model.pth` folder.
+Download and untar [hdr_final_prl_model.pth](https://drive.google.com/file/d/1RE-qpABPiLN0RTxKjR02hGAXRR1VKMUl/view?usp=sharing) into `data/hdr_final_prl_model.pth` folder.
 
 ## Training
 
