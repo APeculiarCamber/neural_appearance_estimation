@@ -1,0 +1,1 @@
+Neural single image estimation model data goes here
