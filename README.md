@@ -6,6 +6,27 @@ Please use `conda env create -f environment.yml` or `conda env create -f environ
 
 Then activate the python environment with `conda activate prlenv`.
 
+
+## Model Data
+
+Our VGG data for LPIPS perceptual loss is required for training.
+Our LDR and HDR model must be downloaded for evaluation and the master demo notebook.
+
+### VGG DATA
+
+Download and untar [vgg_conv.pth](https://drive.google.com/file/d/1hW6cGkmxr1XQPDJ_61atnXwO2yBuJMTZ/view?usp=sharing) into `data/vgg_conv.pth` folder.
+
+### LDR MODEL
+
+Download and untar [ldr_final_prl_model.pth](https://drive.google.com/file/d/1tdnetJpXWmtPkjB5rNCeIahkdLaFD9pJ/view?usp=sharing) into `data/ldr_final_prl_model.pth` folder.
+
+
+### HDR MODEL
+
+Download and untar [hdr_final_prl_model.pth](https://drive.google.com/file/d/1RE-qpABPiLN0RTxKjR02hGAXRR1VKMUl/view?usp=sharing) into `data/hdr_final_prl_model.pth` folder.
+
+
+
 ## Datasets
 
 Our training and eval datasets are sourced directly from [MatFusion](https://github.com/samsartor/matfusion)
@@ -32,27 +53,7 @@ These SVBRDFs are derived from the above INRIA and CC0 datasets by Sam Sartor fo
 
 ### Test Data
 
-Download and untar [test_svbrdf.tar.lz4](https://www.cs.wm.edu/~ppeers/publications/Sartor2023MFA/data/test_svbrdfs.tar.lz4) into a `data/test_svbrdfs` folder.
-
-## MODEL DATA
-
-Our VGG data for LPIPS perceptual loss is required for training.
-Our LDR and HDR model must be downloaded for evaluation and the master demo notebook.
-
-### VGG DATA
-
-Download and untar [vgg_conv.pth](https://drive.google.com/file/d/1hW6cGkmxr1XQPDJ_61atnXwO2yBuJMTZ/view?usp=sharing) into `data/vgg_conv.pth` folder.
-
-### LDR MODEL
-
-Download and untar [ldr_final_prl_model.pth](https://drive.google.com/file/d/1tdnetJpXWmtPkjB5rNCeIahkdLaFD9pJ/view?usp=sharing) into `data/ldr_final_prl_model.pth` folder.
-
-
-### HDR MODEL
-
-Download and untar [hdr_final_prl_model.pth](https://drive.google.com/file/d/1RE-qpABPiLN0RTxKjR02hGAXRR1VKMUl/view?usp=sharing) into `data/hdr_final_prl_model.pth` folder.
-
-## Demo
+Download and untar [test_svbrdf.tar.lz4](https://www.cs.wm.edu/~ppeers/publications/Sartor2023MFA/data/test_svbrdfs.tar.lz4) into a `data/test_svbrdfs` folder.## Demo
 
 See the prl_master_demo.ipynb for a demonstration of our model (after downloading our LDR model).
 
