@@ -14,16 +14,16 @@ Our LDR and HDR model must be downloaded for evaluation and the master demo note
 
 ### VGG DATA
 
-Download and untar [vgg_conv.pth](https://drive.google.com/file/d/1hW6cGkmxr1XQPDJ_61atnXwO2yBuJMTZ/view?usp=sharing) into `data/vgg_conv.pth` folder.
+Download and untar [vgg_conv.pth](https://drive.google.com/file/d/1hW6cGkmxr1XQPDJ_61atnXwO2yBuJMTZ/view?usp=sharing) into `model_data/vgg_conv.pth` folder.
 
 ### LDR MODEL
 
-Download and untar [ldr_final_prl_model.pth](https://drive.google.com/file/d/1tdnetJpXWmtPkjB5rNCeIahkdLaFD9pJ/view?usp=sharing) into `data/ldr_final_prl_model.pth` folder.
+Download and untar [ldr_final_prl_model.pth](https://drive.google.com/file/d/1tdnetJpXWmtPkjB5rNCeIahkdLaFD9pJ/view?usp=sharing) into `model_data/ldr_final_prl_model.pth` folder.
 
 
 ### HDR MODEL
 
-Download and untar [hdr_final_prl_model.pth](https://drive.google.com/file/d/1RE-qpABPiLN0RTxKjR02hGAXRR1VKMUl/view?usp=sharing) into `data/hdr_final_prl_model.pth` folder.
+Download and untar [hdr_final_prl_model.pth](https://drive.google.com/file/d/1RE-qpABPiLN0RTxKjR02hGAXRR1VKMUl/view?usp=sharing) into `model_data/hdr_final_prl_model.pth` folder.
 
 
 
