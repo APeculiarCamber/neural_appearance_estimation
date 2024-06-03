@@ -49,8 +49,7 @@ class NBRDF_ImportanceSampler:
     def __init__(self, alpha, normals):
         self.alpha = alpha
         self.normals = normals
-# Need a pipelined system for interacting with TRAINED models...
-    # think, do the MAKE ALL --> USE pipeline
+
 class SVNBRDF_Renderer(nn.Module):
     def __init__(self, x_rep : T, importance_sampler : SVBRDF_ImportanceSampler, render_encoder : nn.Module, render_net : nn.Module,
                  space_manager : ImSpaceManager):
