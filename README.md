@@ -4,6 +4,8 @@
 Please use `conda env create -f environment.yml` or `conda env create -f environment_bare.yml`.
 `environment_bare.yml` has no version information for dependencies to allow easier version hunting if a version specified in `environment.yml` is no longer available.
 
+Then activate the python environment with `conda activate prlenv`.
+
 ## Datasets
 
 Our training and eval datasets are sourced directly from [MatFusion](https://github.com/samsartor/matfusion)
