@@ -136,7 +136,7 @@ def run_plain(config : ConfigData, num_epochs=20, batch_size=2, num_samples_per_
         input_lr_scheduler.step()
         render_lr_scheduler.step()
         input_loss_func.epoch_update(e)
-        renderer_loss_func.epoch_update(e)\
+        renderer_loss_func.epoch_update(e)
     
     # return the trained model
     return model

@@ -1,41 +1,22 @@
-import torch
-
-# TAKEN FROM JAMIE'S SINMR FILES FOR RELEASE
- 
-import torch
-from torch.utils.data import Dataset
-import numpy
-import imageio.v2 as imageio
+import os
+import torch 
 import random
+import math as m
+import imageio.v2 as imageio
+from torch.utils.data import Dataset, RandomSampler, DataLoader
 from brdf_render import generateDirectionMaps, render_image_ggx
 from brdf_utils import normalize_xy_normals, convert_euclid_to_polar, convert_polar_to_euclid, normalize
 
-# TODO: ensure this is refactored
-MIXED_MAT_ROOT = "/big/data/jidema/matfusion-datasets/"
 
+MIXED_MAT_ROOT = "data/"
 z_height = 4.0
 
-def render_log_output_circle_on_center(brdf : torch.Tensor, num_per_sample : int):
-    # circular render for logging
-    view = torch.tensor([[0.0, 0.0, z_height]] * num_per_sample)
-    l = 2.0 * torch.pi * (torch.arange(0, num_per_sample, dtype=torch.float) / num_per_sample)
-    light = torch.stack([torch.cos(l), torch.sin(l), 2.5*torch.ones(l.shape,dtype=torch.float)], dim=-1)
-    light = normalize(light, d=-1) * z_height
-    lt, vt = generateDirectionMaps(light, view, brdf.size(-1))
-
-    renders = render_image_ggx(lt[None], vt[None], brdf[None,None]).squeeze(0)
-    return renders, lt, vt
-
-import random
 def render_input_ggx_brdfs_single(brdf : torch.Tensor): 
-    height = 4.0
-
-    lv = torch.tensor([[0.0, 0.0, height]])
+    lv = torch.tensor([[0.0, 0.0, z_height]])
     lt, vt = generateDirectionMaps(lv, lv, brdf.size(-1))
     renders = render_image_ggx(lt[:], vt[:], brdf[None,:]).squeeze()
     return renders, lt.squeeze(), vt.squeeze()
 
-import math as m
 def sample_top_hemisphere(n_samples, steradian, device='cpu'):
     
     # Azimuthal angle
@@ -78,37 +59,39 @@ def get_perturbed_mirror_directions(light_dirs, steradian):
     return light_dirs
 
 
-def get_jamie_surface_highlight_samples(n_samples):
+def get_surface_highlight_samples(n_samples):
+    '''
+    Sample light and view positions using the surface point specular reflection method.
+    '''
     sp = (2.0*torch.rand(n_samples, 2))-1.0
     surface_pos = sp + torch.normal(0.0, 2.0, size=(n_samples, 2))
 
     # REFLECT FROM SURFACE POV
-    view_dirs = sample_top_hemisphere(n_samples, torch.pi / 2, device='cpu') * z_height
+    view_positions = sample_top_hemisphere(n_samples, torch.pi / 2, device='cpu') * z_height
 
     light_dists = torch.abs(torch.normal(0.0,2.0,size=(n_samples,))) + 0.5
 
-    reflected_view_dirs = surface_pos - view_dirs[:, 0:2]
-    reflected_view_dirs = torch.cat([reflected_view_dirs, view_dirs[:, 2:]], dim=1)
+    reflected_view_dirs = surface_pos - view_positions[:, 0:2]
+    reflected_view_dirs = torch.cat([reflected_view_dirs, view_positions[:, 2:]], dim=1)
     # CHANGE LIGHT DISTANCE
-    light_dirs = light_dists[:, None] * reflected_view_dirs
+    light_positions = light_dists[:, None] * reflected_view_dirs
     # Back to global frame
-    light_dirs[:, 0:2] = light_dirs[:, 0:2] + surface_pos
+    light_positions[:, 0:2] = light_positions[:, 0:2] + surface_pos
 
-    return view_dirs, light_dirs 
+    return view_positions, light_positions 
     
 
 def render_output_ggx_brdfs(brdf : torch.Tensor, num_per_sample : int):
     '''
     brdfs: ggx svbrdfs of form { N, 10, 256, 256 }
     renders_per_brdf: number of l-v renders to make for each of the N svbrdfs
-    NOTE: STATIC VIEW, 0,0,4
 
     Returns: 
         - tensor of renders shape:     {N, 3, 256, 256}
         - tensor of lights directions: {N, 3, 256, 256}
         - tensor of view   directions: {N, 3, 256, 256}
     '''
-    j_view_dirs, j_light_dirs = get_jamie_surface_highlight_samples(num_per_sample)
+    j_view_dirs, j_light_dirs = get_surface_highlight_samples(num_per_sample)
     light_dirs, view_dirs = j_light_dirs, j_view_dirs
 
     lt, vt = generateDirectionMaps(light_dirs, view_dirs, brdf.size(-1))
@@ -117,52 +100,6 @@ def render_output_ggx_brdfs(brdf : torch.Tensor, num_per_sample : int):
     renders = render_image_ggx(lt[None], vt[None], brdf[None,None]).squeeze(0)
     
     return renders, lt, vt
-
-
-def render_output_ggx_brdfs_jamie(brdf : torch.Tensor, num_per_sample : int):
-    '''
-    brdfs: ggx svbrdfs of form { N, 10, 256, 256 }
-    renders_per_brdf: number of l-v renders to make for each of the N svbrdfs
-    NOTE: STATIC VIEW, 0,0,4
-
-    Returns: 
-        - tensor of renders shape:     {N, 3, 256, 256}
-        - tensor of lights directions: {N, 3, 256, 256}
-        - tensor of view   directions: {N, 3, 256, 256}
-    '''
-
-    j_view_dirs, j_light_dirs = get_jamie_surface_highlight_samples(num_per_sample)
-    light_dirs, view_dirs = j_light_dirs, j_view_dirs
-
-    lt, vt = generateDirectionMaps(light_dirs, view_dirs, brdf.size(-1))
-    # lt, vt = Shape(BRDF_COUNT, RENDERS, 3, H, W), We use implicit broadcasting aggressively here...
-
-    renders = render_image_ggx(lt[None], vt[None], brdf[None,None]).squeeze(0)
-    
-    return renders, lt, vt, light_dirs, view_dirs
-
-def render_output_ggx_brdfs_hemisphere(brdf : torch.Tensor, num_per_sample : int, height):
-    '''
-    brdfs: ggx svbrdfs of form { N, 10, 256, 256 }
-    renders_per_brdf: number of l-v renders to make for each of the N svbrdfs
-    NOTE: STATIC VIEW, 0,0,4
-
-    Returns: 
-        - tensor of renders shape:     {N, 3, 256, 256}
-        - tensor of lights directions: {N, 3, 256, 256}
-        - tensor of view   directions: {N, 3, 256, 256}
-    '''
-
-    j_view_dirs = sample_top_hemisphere(num_per_sample, torch.pi / 2, brdf.device) * height
-    j_light_dirs = sample_top_hemisphere(num_per_sample, torch.pi / 2, brdf.device) * height
-    light_dirs, view_dirs = j_light_dirs, j_view_dirs
-
-    lt, vt = generateDirectionMaps(light_dirs, view_dirs, brdf.size(-1))
-    # lt, vt = Shape(BRDF_COUNT, RENDERS, 3, H, W), We use implicit broadcasting aggressively here...
-
-    renders = render_image_ggx(lt[None], vt[None], brdf[None,None]).squeeze(0)
-    
-    return renders, lt, vt, light_dirs, view_dirs
 
 
 class NaiveCPU_Dataset(Dataset):
@@ -193,68 +130,6 @@ class NaiveCPU_Dataset(Dataset):
                 index = (index + 1) % len(self)
 
 
-class CircleRender_CPU_Dataset(Dataset):
-    def __init__(self, brdf_dataset : Dataset, num_out_samples=2, inpaint=None):
-        self.brdf_dataset = brdf_dataset
-        self.num_out_samples = num_out_samples
-        
-        self.is_inpaint = inpaint != None
-        if self.is_inpaint:
-            self.inpaint_quantile = inpaint[0]
-
-    def __len__(self):
-        return len(self.brdf_dataset)
-    
-    def __getitem__(self,index):
-        while True:
-            try:
-                brdf = self.brdf_dataset[index]
-                brdf = normalize_xy_normals(brdf)
-
-                r, l, v = render_input_ggx_brdfs_single(brdf)
-                rough, n = brdf[6], brdf[7:10]
-
-                tr, tl, tv = render_log_output_circle_on_center(brdf, self.num_out_samples)
-                return (r, l, v, n, tr, tl, tv, rough)
-            except Exception as e:
-                print("ERROR:", str(e), type(e))
-                index = (index + 1) % len(self)
-
-
-
-
-PATH_TO_INRIA = '/big/data/INRIA/'
-
-class INRIAdataset(Dataset):
-    def __init__(self,patchsize=256):
-        super(INRIAdataset,self)
-        self.patchsize = patchsize
-        f = open(PATH_TO_INRIA+'/DeepMaterialsData/trainBlended/filelist.txt','r')
-        self.filenames = f.readlines()
-        for i in range(len(self.filenames)):
-            self.filenames[i] = self.filenames[i].replace('\;',';').replace('\n','')
-    def __len__(self):
-        return 199068
-    def __getitem__(self,index):
-        rx = random.randint(0,288-self.patchsize)
-        ry = random.randint(0,288-self.patchsize)
-        a = numpy.zeros([288,288,10],order='F')
-        x = ((imageio.imread('/big/data/INRIA/DeepMaterialsData/trainBlended/'+self.filenames[index])/255.0))
-        # order for SINMR is diffuse, specular, roughness, normals
-        a[:,:,0:3] = x[:,(4*288):(4*288+288),:]
-        a[:,:,3:6] = x[:,(2*288):(2*288+288),:]
-        a[:,:,6] = x[:,(3*288):(3*288+288),0]
-        a[:,:,7:10] = x[:,(1*288):(1*288+288),:]
-
-        # swap to pytorch format (channels first, not last)
-        a=numpy.swapaxes(a,0,2)
-        a=numpy.swapaxes(a,1,2)
-        # crop based on random value
-        a=a[:,rx:rx+self.patchsize,ry:ry+self.patchsize]
-        y = torch.from_numpy(a.astype(numpy.float32))
-        return y
-
-import os
 class Mixed_SVBRDF_Dataset(Dataset):
     def check_and_count(self, dir):
         subdirs = ["diffuse", "specular", "normals", "roughness"]
@@ -319,10 +194,6 @@ class Mixed_SVBRDF_Dataset(Dataset):
 
 
 
-
-
-from torch.utils.data import RandomSampler, DataLoader
-
 def load_fusion_training_data(batch_size=4, sample_limit=None, crop_size=256, replacement=True, num_out_samples=2, num_samples_per_epoch=40000):
     train_dataset = NaiveCPU_Dataset(Mixed_SVBRDF_Dataset([f'{MIXED_MAT_ROOT}/mixed_svbrdfs', f'{MIXED_MAT_ROOT}/cc0_svbrdfs', f'{MIXED_MAT_ROOT}/inria_svbrdfs'], 
                                          sample_limit=sample_limit, 
@@ -331,6 +202,31 @@ def load_fusion_training_data(batch_size=4, sample_limit=None, crop_size=256, re
     sampler = RandomSampler(train_dataset, replacement=replacement,num_samples=num_samples_per_epoch)
     train_dataloader = DataLoader(train_dataset, batch_size=batch_size, sampler=sampler, num_workers=4, persistent_workers=True)
     return train_dataloader
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+************************************************************************************************
+***********************               TESTING                     ******************************
+************************************************************************************************
+'''
+
+
+
+
+
+
+
+
 
 
 class Sam_Test_SVBRDF_Dataset(Dataset):
@@ -372,7 +268,49 @@ class Sam_Test_SVBRDF_Dataset(Dataset):
                           torch.from_numpy(r), torch.from_numpy(n)], dim=0).to(torch.float)
 
 
-def load_sam_testing_data(batch_size=4, crop_size=256, num_samples=256, replacement=True, num_out_samples=2):
+def render_log_output_circle_on_center(brdf : torch.Tensor, num_per_sample : int):
+    # circular render for logging
+    view = torch.tensor([[0.0, 0.0, z_height]] * num_per_sample)
+    l = 2.0 * torch.pi * (torch.arange(0, num_per_sample, dtype=torch.float) / num_per_sample)
+    light = torch.stack([torch.cos(l), torch.sin(l), 2.5*torch.ones(l.shape,dtype=torch.float)], dim=-1)
+    light = normalize(light, d=-1) * z_height
+    lt, vt = generateDirectionMaps(light, view, brdf.size(-1))
+
+    renders = render_image_ggx(lt[None], vt[None], brdf[None,None]).squeeze(0)
+    return renders, lt, vt
+
+
+class CircleRender_CPU_Dataset(Dataset):
+    def __init__(self, brdf_dataset : Dataset, num_out_samples=2, inpaint=None):
+        self.brdf_dataset = brdf_dataset
+        self.num_out_samples = num_out_samples
+        
+        self.is_inpaint = inpaint != None
+        if self.is_inpaint:
+            self.inpaint_quantile = inpaint[0]
+
+    def __len__(self):
+        return len(self.brdf_dataset)
+    
+    def __getitem__(self,index):
+        while True:
+            try:
+                brdf = self.brdf_dataset[index]
+                brdf = normalize_xy_normals(brdf)
+
+                r, l, v = render_input_ggx_brdfs_single(brdf)
+                rough, n = brdf[6], brdf[7:10]
+
+                tr, tl, tv = render_log_output_circle_on_center(brdf, self.num_out_samples)
+                return (r, l, v, n, tr, tl, tv, rough)
+            except Exception as e:
+                print("ERROR:", str(e), type(e))
+                index = (index + 1) % len(self)
+
+
+
+
+def load_matfusion_testing_data(batch_size=4, crop_size=256, num_samples=256, replacement=True, num_out_samples=2):
     test_dataset = NaiveCPU_Dataset(Sam_Test_SVBRDF_Dataset(f"{MIXED_MAT_ROOT}/samtest-dataset/", patchsize=crop_size),
                                      num_out_samples=num_out_samples)
     sampler = RandomSampler(test_dataset, replacement=replacement, num_samples=num_samples)
