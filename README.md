@@ -11,7 +11,7 @@ Ensure you download all three training sets before training.
 
 ### INRIA
 
-The inria dataset can be downloaded from https://team.inria.fr/graphdeco/projects/deep-materials/. Unzip it into the `data` directory.
+The inria dataset can be downloaded from https://team.inria.fr/graphdeco/projects/deep-materials/. Unzip it into the `data` directory (`data/DeepMaterialsData/`).
 Then run `cd data && python convert_inria.py`. This create a `data/inria_svbrdfs` folder formatted as needed for our training process.
 
 These SVBRDFs are distributed under a CC BY-NC-ND 2.0 licence.

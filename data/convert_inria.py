@@ -1,7 +1,6 @@
 import imageio.v3 as iio
 from pathlib import Path
 from tqdm import tqdm
-# TODO: note confirmed to work yet
 
 input_dir = 'DeepMaterialsData' / 'trainBlended'
 output_dir = 'inria_svbrdfs'
