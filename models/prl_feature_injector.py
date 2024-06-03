@@ -37,7 +37,6 @@ class SineDirectionEncoder(nn.Module):
     def get_feature_count(self):
         return (2 * self.freq_count * 9) + 9
 
-# TODO: this is such a problem: look at how BIG these are!!!
 class SineDirectionEncoder_NN(nn.Module):
     def __init__(self, freq_count, start=1, rate=2, out_dims=9):
         super().__init__()

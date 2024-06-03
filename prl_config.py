@@ -68,7 +68,7 @@ class ConfigData:
                  use_final_tanh=True, tanh_bottleneck=False, tanh_passthroughs=False,
                  renset_final_tanh=True,
                  ):
-        self.run_name = "Standard_TODO"
+        self.run_name = "Standard"
 
         self.lr = lr
         self.lr_gamma = lr_gamma

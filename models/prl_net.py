@@ -85,17 +85,16 @@ class SVNBRDF_Renderer(nn.Module):
         return NBRDF_Renderer(self.x_rep, self, y, x)
 
     def render_bilerp_sample(self, l, v, x, y):
-        pass # TODO
+        pass
 
 class NBRDF_Renderer(nn.Module):
     def __init__(self, x_rep : T, parent : SVNBRDF_Renderer, y : int, x : int):
         super().__init__()
         '''
         x_rep = (1, N, H, W)
-        TODO: borrowed components, not sure how function?
         '''
         self.x_rep = x_rep[:,:,y,x].detach().clone().cuda()
-        self.render_encoder = parent.render_encoder # TODO: shared nn modules?
+        self.render_encoder = parent.render_encoder
         self.render_net = parent.render_net
 
         self.importance_sampler = parent.importance_sampler.sample(x, y)
@@ -197,12 +196,10 @@ class RelitPixelNet(nn.Module):
 
         # MLP POSITIONAL ENCODING
         pr_encoded_position = self.render_encoder(rl_lt, rl_vt)
-        # INJECT POSITIONAL ENCODING 
-        # x_rep = torch.cat([x_rep, pr_encoded_position], dim=1)
 
         # PROCESS
         px : torch.Tensor = self.render_net(x_rep, pr_encoded_position)
-        # TODO : Post processing ?
+        # No post processing here
 
         return px
 

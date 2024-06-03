@@ -263,7 +263,7 @@ class GenResNetReplicateHA(nn.Module):
         self.extra_decoder_channels=extra_decoder_channels
         self.conv1 = nn.Conv2d(self.encoder_channels, self.inplanes, kernel_size=7, stride=1, padding=3,padding_mode='replicate',bias=False)
 
-        deconv_kernel = 7 # TODO
+        deconv_kernel = 7
         self.deconv1 = nn.Conv2d(int(feature_depth*encoder_depth_factor), output_depth_factor, 
                                  kernel_size=deconv_kernel, stride=1, padding=(deconv_kernel // 2),padding_mode='replicate',bias=False) # nn.Conv2d(int(feature_depth*encoder_depth_factor), output_depth_factor, kernel_size=7, stride=1, padding=3,padding_mode='replicate',bias=False)
         self.deconv1_acitvation = nn.Tanh() if tanh_final_activation else nn.LeakyReLU(negative_slope=0.001)
@@ -425,7 +425,6 @@ class GenResNetReplicateHA(nn.Module):
             x = reverse(x)
 
         x = self.deconv1(x)
-        # TODO
         # x = torch.tanh(x)
         return x
 
