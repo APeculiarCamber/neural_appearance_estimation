@@ -29,6 +29,7 @@ Download and untar [hdr_final_prl_model.pth](https://drive.google.com/file/d/1RE
 
 ## Datasets
 
+Datasets are only required for training and evaluation, not the demo notebook.
 Our training and eval datasets are sourced directly from [MatFusion](https://github.com/samsartor/matfusion)
 Ensure you download all three training sets before training.
 
