@@ -15,7 +15,6 @@ class NetTrainMode(Enum):
 from torch import nn
 
 
-# OH FUCK, this needs access to the OUTPUTS!!!!
 class ImSpaceManager(nn.Module):
     def __init__(self, input_com_func : nn.Module, input_decom_func  : nn.Module, 
                  target_com_func : nn.Module, target_decom_func : nn.Module):
