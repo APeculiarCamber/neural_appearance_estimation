@@ -56,13 +56,15 @@ These SVBRDFs are derived from the above INRIA and CC0 datasets by Sam Sartor fo
 
 Download and untar [test_svbrdf.tar.lz4](https://www.cs.wm.edu/~ppeers/publications/Sartor2023MFA/data/test_svbrdfs.tar.lz4) into a `data/test_svbrdfs` folder.## Demo
 
+# Demo
+
 See the prl_master_demo.ipynb for a demonstration of our model (after downloading our LDR model).
 
 
-## Training
+# Training
 
 See the prl_main_train.py script for a template of how we train our model.
 
-## Evaluation
+# Evaluation
 
 See the prl_main_eval.py script for a template of how we evaluate our model.
